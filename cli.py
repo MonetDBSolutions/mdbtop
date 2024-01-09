@@ -9,10 +9,10 @@ from mdbtop.monitor import Monitor
 from time import sleep
 from datetime import datetime
 
-PADDING = 2
-FIELDS = ['pid', 'vms', 'rss', 'cpu_percent', 'pname']
-HEADER = ['PID', 'VIRT', 'RSS', 'CPU%', 'COMMAND']
-DEFAULT_COL_WIDTHS = [8, 8, 8, 8, 10]
+PADDING = 4
+FIELDS = ['pid', 'pname', 'vms', 'rss', 'cpu_percent', 'database', 'wal', 'bat']
+HEADER = ['PID', 'PROC', 'VIRT', 'RSS', 'CPU%', 'DB', 'WAL', 'BAT']
+DEFAULT_COL_WIDTHS = [8, 8, 8, 8, 10, 8, 8]
 
 
 def _convert_bytes_to_human_readable(size_in_bytes):
@@ -29,8 +29,9 @@ def extract_fields(data, fields):
         row = []
         for field in fields:
             value = proc[field]
-            if field in ['vms', 'rss']:
-                value = _convert_bytes_to_human_readable(value)
+            #if field in ['vms', 'rss', 'wal', 'bat']:
+            #    if type(value) == float or type(value) == int:
+            #        value = _convert_bytes_to_human_readable(value)
             row.append(value)
         res.append(row)
     return res

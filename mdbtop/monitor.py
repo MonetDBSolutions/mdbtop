@@ -37,7 +37,6 @@ def _get_disk_usage(dbpath):
     wal_bytes, wal_files = _get_folder_stats(os.path.join(dbpath, 'sql_logs'))
     bat_bytes, bat_files = _get_folder_stats(os.path.join(dbpath, 'bat'))
     return dict(
-            dbpath=dbpath,
             wal = {'bytes': wal_bytes, 'files': wal_files},
             bat = {'bytes': bat_bytes, 'files': bat_files})
 
@@ -52,14 +51,20 @@ def _pack_info(proc: psutil.Process):
         net_connections = proc.connections(kind='all')
         open_files = proc.open_files()
         pname = proc.name()
-        try:
-            for opt in proc.cmdline():
-                if '--dbpath' in opt:
-                    dbpath = opt.split('=').pop()
-                    db = dbpath.split('/').pop()
-                    pname += f'_{db}'
-        except:
-            pass
+        database = 'N/A'
+        wal = 'N/A'
+        bat = 'N/A'
+        if pname == 'mserver5':
+            try:
+                for opt in proc.cmdline():
+                    if '--dbpath' in opt:
+                        dbpath = opt.split('=').pop()
+                        database = dbpath.split('/').pop()
+                        disk_usage = _get_disk_usage(dbpath) 
+                        wal = disk_usage['wal']['bytes']
+                        bat = disk_usage['bat']['bytes']
+            except:
+                pass
 
         return {
             'pid': proc.pid,
@@ -72,7 +77,10 @@ def _pack_info(proc: psutil.Process):
             'num_fds': proc.num_fds(),
             'num_threads': proc.num_threads(),
             'num_net_connections': len(net_connections),
-            'num_open_files': len(open_files)
+            'num_open_files': len(open_files),
+            'database': database,
+            'wal': wal,
+            'bat': bat
         }
 
 
@@ -93,8 +101,7 @@ def _do_monitor(interval, log, dbpath=None, processes: List[str]=[]):
         ts = datetime.now()
         event = dict(ts=ts.isoformat(),
                      system=_get_sys_info(), 
-                     processes=(_get_proc_info(processes) if processes else []),
-                     disk=(_get_disk_usage(dbpath) if dbpath else None))
+                     processes=(_get_proc_info(processes) if processes else []))
         with open(log, 'a') as f:
             print(json.dumps(event), file=f)
         ellapsed = ts - start
