@@ -75,14 +75,6 @@ def main():
         description="Logs system resourse usage for MonetDB processes"
     )
     parser.add_argument(
-        "-d",
-        "--dbpath",
-        dest="dbpath",
-        type=str,
-        action="store",
-        help="path to database"
-    )
-    parser.add_argument(
         "-t",
         "--interval",
         dest="interval",
@@ -102,7 +94,7 @@ def main():
     parser.add_argument('-v', '--version', action='version', version=f'{__version__}')
 
     args = parser.parse_args()
-    monitor = Monitor(interval=args.interval, log_file=args.log_file, dbpath=args.dbpath)
+    monitor = Monitor(interval=args.interval, log_file=args.log_file)
     monitor.start()
     try:
         curses.wrapper(display_stats, monitor.log, args.interval)

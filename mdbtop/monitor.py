@@ -95,7 +95,7 @@ def _get_proc_info(processes: List[str])-> List[Optional[Dict]]:
     return res
 
 
-def _do_monitor(interval, log, dbpath=None, processes: List[str]=[]):
+def _do_monitor(interval, log, processes: List[str]=[]):
     start = datetime.now()
     while True:
         ts = datetime.now()
@@ -111,11 +111,10 @@ def _do_monitor(interval, log, dbpath=None, processes: List[str]=[]):
 
 
 class Monitor(object):
-    def __init__(self, interval=3, log_file=None, dbpath=None, processes=['mserver5', 'monetdbd']):
+    def __init__(self, interval=3, log_file=None, processes=['mserver5', 'monetdbd']):
         self.running = False
         self.worker = None
         self.interval = interval
-        self.dbpath = dbpath
         self.processes = processes
         if log_file:
             if os.path.exists(log_file) and os.path.getsize(log_file) > 0:
@@ -131,7 +130,7 @@ class Monitor(object):
     def start(self):
         if not self.running:
             args = (self.interval, self.log)
-            kwargs = dict(dbpath=self.dbpath, processes=self.processes)
+            kwargs = dict(processes=self.processes)
             self.worker = Process(target=_do_monitor, args=args, kwargs=kwargs)
             self.worker.start()
             self.running = True
