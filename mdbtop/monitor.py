@@ -2,11 +2,10 @@ import os
 import psutil
 import json
 from tempfile import mkstemp
-from datetime import datetime, timedelta
+from datetime import datetime
 from time import sleep
 from multiprocessing import Process
 from typing import List, Dict, Optional
-from pathlib import Path
 
 
 def _get_sys_info() -> Dict:

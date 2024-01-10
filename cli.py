@@ -7,7 +7,7 @@ import json
 from mdbtop import __version__
 from mdbtop.monitor import Monitor
 from time import sleep
-from datetime import datetime
+from datetime import datetime, timedelta
 
 PADDING = 4
 FIELDS = ['pid', 'pname', 'vms', 'rss', 'cpu_percent', 'database', 'wal', 'bat']
@@ -59,14 +59,15 @@ def render(stdscr, data, elapsed):
 
 def display_stats(stdscr, log_file, interval):
     start = datetime.now()
+    # show header initially 
+    render(stdscr, [], timedelta(0))
     with open(log_file) as f:
         while True:
             line = f.readline()
             elapsed = datetime.now() - start
-            data = []
             if line:
                 data = extract_fields(json.loads(line), FIELDS)
-            render(stdscr, data, elapsed)
+                render(stdscr, data, elapsed)
             sleep(interval)
 
 
