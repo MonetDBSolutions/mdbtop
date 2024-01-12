@@ -1,0 +1,26 @@
+<!-- template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mdbtop</title>
+</head>
+<body>
+    <h2>{{header}}</h2>
+    <div>
+      <canvas id="mdbtopChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1"></script>
+    <script>
+        const ctx = document.getElementById('mdbtopChart');
+        const event_list = {{data}}
+        {{js}}
+        render(ctx, event_list);
+    </script>
+</body>
+</html>
+
