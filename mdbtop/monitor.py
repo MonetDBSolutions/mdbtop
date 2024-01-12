@@ -50,22 +50,7 @@ def _pack_info(proc: psutil.Process):
         net_connections = proc.connections(kind='all')
         open_files = proc.open_files()
         pname = proc.name()
-        database = 'N/A'
-        wal = 'N/A'
-        bat = 'N/A'
-        if pname == 'mserver5':
-            try:
-                for opt in proc.cmdline():
-                    if '--dbpath' in opt:
-                        dbpath = opt.split('=').pop()
-                        database = dbpath.split('/').pop()
-                        disk_usage = _get_disk_usage(dbpath) 
-                        wal = disk_usage['wal']['bytes']
-                        bat = disk_usage['bat']['bytes']
-            except:
-                pass
-
-        return {
+        res = {
             'pid': proc.pid,
             'pname': pname,
             'rss': mem.rss,
@@ -77,10 +62,21 @@ def _pack_info(proc: psutil.Process):
             'num_threads': proc.num_threads(),
             'num_net_connections': len(net_connections),
             'num_open_files': len(open_files),
-            'database': database,
-            'wal': wal,
-            'bat': bat
         }
+        if pname == 'mserver5':
+            try:
+                for opt in proc.cmdline():
+                    if '--dbpath' in opt:
+                        dbpath = opt.split('=').pop()
+                        res['database'] = dbpath.split('/').pop()
+                        disk_usage = _get_disk_usage(dbpath) 
+                        res['wal'] = disk_usage['wal']['bytes']
+                        res['bat'] = disk_usage['bat']['bytes']
+                        break
+            except:
+                pass
+
+        return res
 
 
 def _get_proc_info(processes: List[str])-> List[Optional[Dict]]:

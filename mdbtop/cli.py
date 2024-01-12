@@ -28,11 +28,14 @@ def extract_fields(data, fields):
     for proc in data['processes']:
         row = []
         for field in fields:
-            value = proc[field]
-            #if field in ['vms', 'rss', 'wal', 'bat']:
-            #    if type(value) == float or type(value) == int:
-            #        value = _convert_bytes_to_human_readable(value)
-            row.append(value)
+            if field in proc:
+                value = proc[field]
+                #if field in ['vms', 'rss', 'wal', 'bat']:
+                #    if type(value) == float or type(value) == int:
+                #        value = _convert_bytes_to_human_readable(value)
+                row.append(value)
+            else:
+                row.append('N/A')
         res.append(row)
     return res
 
