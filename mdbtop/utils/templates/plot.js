@@ -102,7 +102,7 @@ function render(ctx, event_list=[]) {
             scales: {
                 x: {
                     type: 'time',
-                    time: {unit: "second"},
+                    // time: {unit: "second"},
                     title: {display: true, text: "Time"}
                 },
                 yl: {

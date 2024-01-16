@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import signal
 import argparse
 import curses
 import json
@@ -105,6 +106,13 @@ def main():
     args = parser.parse_args()
     monitor = Monitor(interval=args.interval, log_file=args.log_file)
     monitor.start()
+
+    def handle_sigterm(signum, frame):
+        monitor.stop()
+        sys.exit(0)
+
+    # Register the handler for SIGTERM
+    signal.signal(signal.SIGTERM, handle_sigterm)
     try:
         curses.wrapper(display_stats, monitor.log, 3)
     except KeyboardInterrupt:
