@@ -100,6 +100,12 @@ def main():
         action="store",
         help="path to log file"
     )
+    parser.add_argument(
+        "--silent",
+        dest="silent",
+        action="store_true",
+        help="no output"
+    )
 
     parser.add_argument('-v', '--version', action='version', version=f'{__version__}')
 
@@ -114,7 +120,11 @@ def main():
     # Register the handler for SIGTERM
     signal.signal(signal.SIGTERM, handle_sigterm)
     try:
-        curses.wrapper(display_stats, monitor.log, 3)
+        if args.silent:
+            while True:
+                sleep(args.interval)
+        else:
+            curses.wrapper(display_stats, monitor.log, 3)
     except KeyboardInterrupt:
         pass
     finally:
