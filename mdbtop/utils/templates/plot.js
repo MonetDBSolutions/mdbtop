@@ -25,8 +25,8 @@ function render(ctx, event_list=[]) {
                 } else {
                     const slot = {
                         database: p['database'],
-                        wal: [{x: ts, y: p['wal']}],
-                        bat: [{x: ts, y: p['bat']}],
+                        wal: [{x: ts, y: p['wal']['bytes']}],
+                        bat: [{x: ts, y: p['bat']['bytes']}],
                         m5_vms: [{x: ts, y: p['vms']}],
                         m5_rss: [{x: ts, y: p['rss']}],
                         m5_cpu: [{x:ts, y: p['cpu_percent']}],

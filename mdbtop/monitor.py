@@ -19,12 +19,13 @@ def _get_sys_info() -> Dict:
 
 def _get_folder_stats(folder_path):
     some_bytes = 0
-    files = 0
+    files = []
     with os.scandir(folder_path) as dir_contents:
         for entry in dir_contents:
             if entry.is_file():
-                some_bytes += entry.stat().st_size
-                files += 1
+                fsize = entry.stat().st_size
+                some_bytes += fsize
+                files.append(dict(fname=entry.name, fsize=fsize))
             elif entry.is_dir():
                  _bytes, _files = _get_folder_stats(entry.path)
                  some_bytes += _bytes
@@ -35,9 +36,10 @@ def _get_folder_stats(folder_path):
 def _get_disk_usage(dbpath):
     wal_bytes, wal_files = _get_folder_stats(os.path.join(dbpath, 'sql_logs'))
     bat_bytes, bat_files = _get_folder_stats(os.path.join(dbpath, 'bat'))
+    # bat files could be many, so keep just count and total size
     return dict(
-            wal = {'bytes': wal_bytes, 'files': wal_files},
-            bat = {'bytes': bat_bytes, 'files': bat_files})
+            wal = {'bytes': wal_bytes, 'files': wal_files, 'fcount': len(wal_files)},
+            bat = {'bytes': bat_bytes, 'fcount': len(bat_files)})
 
 
 def _pack_info(proc: psutil.Process):
@@ -70,8 +72,8 @@ def _pack_info(proc: psutil.Process):
                         dbpath = opt.split('=').pop()
                         res['database'] = dbpath.split('/').pop()
                         disk_usage = _get_disk_usage(dbpath) 
-                        res['wal'] = disk_usage['wal']['bytes']
-                        res['bat'] = disk_usage['bat']['bytes']
+                        res['wal'] = disk_usage['wal']
+                        res['bat'] = disk_usage['bat']
                         break
             except:
                 pass
