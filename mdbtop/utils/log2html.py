@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import argparse
 import json
 from jinja2 import Environment, FileSystemLoader
@@ -16,7 +17,8 @@ def log2list(log_file):
 
 def log2html(log_file, out_file=None, header=None):
     data = log2list(log_file)
-    template_env = Environment(loader=FileSystemLoader('templates'),
+    templates = os.path.join(os.path.dirname(__file__), 'templates')
+    template_env = Environment(loader=FileSystemLoader(templates),
                                keep_trailing_newline=True)
     template = template_env.get_template('index_template.j2')
     js = template_env.get_template('plot.js').render()

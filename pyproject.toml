@@ -12,6 +12,10 @@ jinja2 = "^3.1.3"
 
 [tool.poetry.scripts]
 mdbtop = 'mdbtop.cli:main'
+mdbtop2html = 'mdbtop.utils.log2html:main'
+
+[tool.poetry.extras]
+templates = ["jinja-templates", 'js']
 
 [build-system]
 requires = ["poetry-core"]
