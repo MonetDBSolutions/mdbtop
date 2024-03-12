@@ -23,7 +23,8 @@ def log2html(log_file, out_file=None, header=None):
     template = template_env.get_template('index_template.j2')
     js = template_env.get_template('plot.js').render()
     if out_file:
-        print(template.render(data=json.dumps(data), js=js, header=header), file=out_file)
+        with open(out_file, 'w') as fout:
+            print(template.render(data=json.dumps(data), js=js, header=header), file=fout)
     else:
         print(template.render(data=json.dumps(data), js=js, header=header))
 
