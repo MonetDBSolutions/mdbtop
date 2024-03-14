@@ -120,8 +120,11 @@ class Monitor(object):
                 pass
             self.log = log_file
         else:
-            date = datetime.now().date()
-            fd, self.log = mkstemp(prefix=f'mdbtop-{date}-', suffix='.log', text=True)
+            now = datetime.now()
+            date = now.date()
+            hour = now.hour
+            minute = now.minute
+            fd, self.log = mkstemp(prefix=f'mdbtop_{date}_{hour}_{minute}_', suffix='.log', text=True)
             # don't leak fd
             os.close(fd)
 
