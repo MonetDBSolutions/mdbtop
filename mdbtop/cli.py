@@ -30,7 +30,10 @@ def extract_fields(data, fields):
         row = []
         for field in fields:
             if field in proc:
-                value = proc[field]
+                if field in ['wal', 'bat']:
+                    value = proc[field]['bytes']
+                else:
+                    value = proc[field]
                 #if field in ['vms', 'rss', 'wal', 'bat']:
                 #    if type(value) == float or type(value) == int:
                 #        value = _convert_bytes_to_human_readable(value)
