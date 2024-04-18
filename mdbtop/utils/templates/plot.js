@@ -14,11 +14,13 @@ function render(ctx, event_list=[]) {
             // event may have captured more than one mserver5
             if (p['pname'] === 'mserver5') {
                 const pid = p['pid'];
+                const wal = p['wal'] || {};
+                const bat = p['bat'] || {};
                 if (m5lookup.hasOwnProperty(pid)) {
                     const slot = m5lookup[pid];
-                    slot.wal.push({x: ts, y: p['wal']['bytes']});
-                    slot.wal_files.push({ts, files: (p['wal']['files'] || [])});
-                    slot.bat.push({x: ts, y: p['bat']['bytes']});
+                    slot.wal.push({x: ts, y: wal['bytes']});
+                    slot.wal_files.push({ts, files: (wal['files'] || [])});
+                    slot.bat.push({x: ts, y: bat['bytes']});
                     slot.m5_vms.push({x: ts, y: p['vms']});
                     slot.m5_rss.push({x: ts, y: p['rss']});
                     slot.m5_cpu.push({x: ts, y: p['cpu_percent']});
@@ -26,9 +28,9 @@ function render(ctx, event_list=[]) {
                 } else {
                     const slot = {
                         database: p['database'],
-                        wal: [{x: ts, y: p['wal']['bytes']}],
-                        wal_files: [{ts, files: (p['wal']['files'] || [])}],
-                        bat: [{x: ts, y: p['bat']['bytes']}],
+                        wal: [{x: ts, y: wal['bytes']}],
+                        wal_files: [{ts, files: (wal['files'] || [])}],
+                        bat: [{x: ts, y: bat['bytes']}],
                         m5_vms: [{x: ts, y: p['vms']}],
                         m5_rss: [{x: ts, y: p['rss']}],
                         m5_cpu: [{x:ts, y: p['cpu_percent']}],
