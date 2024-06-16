@@ -12,7 +12,7 @@ function render(ctx, event_list=[]) {
         for (let p of next['processes']) {
             // filter mserver5 only
             // event may have captured more than one mserver5
-            if (p['pname'] === 'mserver5') {
+            if (/mserver5/.test(p['pname'])) {
                 const pid = p['pid'];
                 const wal = p['wal'] || {};
                 const bat = p['bat'] || {};

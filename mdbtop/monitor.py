@@ -80,11 +80,17 @@ def _pack_info(proc: psutil.Process):
 
         return res
 
+def check_name(name, target_names):
+    for target in target_names:
+        if target in name:
+            return True
+    return False
+
 
 def _get_proc_info(processes: List[str])-> List[Optional[Dict]]:
     res = []
     for proc in psutil.process_iter(['pid', 'name']):
-        if proc.is_running() and (proc.info['name'] in processes):
+        if proc.is_running() and check_name(proc.info['name'], processes):
             try:
                 res.append(_pack_info(proc))
             except:
