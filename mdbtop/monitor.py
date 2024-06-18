@@ -8,6 +8,13 @@ from multiprocessing import Process
 from typing import List, Dict, Optional
 
 
+def check_name(name, target_names):
+    for target in target_names:
+        if target in name:
+            return True
+    return False
+
+
 def _get_sys_info() -> Dict:
     res = dict(cpu={}, memory={})
     res['cpu']['percent'] = psutil.cpu_percent(interval=0.1)
@@ -65,7 +72,7 @@ def _pack_info(proc: psutil.Process):
             'num_net_connections': len(net_connections),
             'num_open_files': len(open_files),
         }
-        if pname == 'mserver5':
+        if 'mserver5' in pname:
             try:
                 for opt in proc.cmdline():
                     if '--dbpath' in opt:
@@ -79,12 +86,6 @@ def _pack_info(proc: psutil.Process):
                 pass
 
         return res
-
-def check_name(name, target_names):
-    for target in target_names:
-        if target in name:
-            return True
-    return False
 
 
 def _get_proc_info(processes: List[str])-> List[Optional[Dict]]:
